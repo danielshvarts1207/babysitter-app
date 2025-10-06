@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	db, ctx := repository.Connect("root:my-secret-pw@tcp(127.0.0.1:3306)/babysitterdb")
+	db, ctx := repository.Connect("root:my-secret-pw@tcp(127.0.0.1:3306)/babysitterdb?parseTime=true")
 
 	BabysitterRepository := repository.NewBabysitterHandler(db, ctx)
 	BabysitterHandler := handlers.NewBabysitterHandler(BabysitterRepository)
