@@ -31,10 +31,6 @@ func (r *BabysittersRepository) CreateBabysitter(c *gin.Context, babysitter *ent
 	}
 }
 
-func (r *BabysittersRepository) GetBabysitterById(c *gin.Context, id string) entities.Babysitter {
-	babysitter, err := gorm.G[entities.Babysitter](r.DB).Where("ID = ?", id).First(r.Ctx)
-	if err != nil {
-		panic(err)
-	}
-	return babysitter
+func (r *BabysittersRepository) GetBabysitterById(c *gin.Context, id string) (entities.Babysitter, error) {
+	return gorm.G[entities.Babysitter](r.DB).Where("ID = ?", id).First(r.Ctx)
 }

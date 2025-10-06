@@ -3,10 +3,12 @@ package handlers
 import (
 	"babysitter-app/models/entities"
 	"babysitter-app/repository"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"gorm.io/gorm"
 )
 
 type BabysitterHandler struct {
@@ -29,9 +31,15 @@ func (h *BabysitterHandler) GetAllBabysitters(c *gin.Context) {
 
 func (h *BabysitterHandler) GetBabysitterById(c *gin.Context) {
 	id := c.Param("id")
-	babysitter := h.BabysittersRepository.GetBabysitterById(c, id)
-
-	c.IndentedJSON(http.StatusOK, babysitter)
+	babysitter, err := h.BabysittersRepository.GetBabysitterById(c, id)
+	switch {
+	case err == nil:
+		c.IndentedJSON(http.StatusOK, babysitter)
+	case errors.Is(err, gorm.ErrRecordNotFound):
+		c.JSON(http.StatusNotFound, gin.H{"error": "Babysitter not found"})
+	default:
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+	}
 }
 
 func (h *BabysitterHandler) CreateBabysitter(c *gin.Context) {
