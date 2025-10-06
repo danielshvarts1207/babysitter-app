@@ -20,11 +20,21 @@ func NewBabysitterHandler(db *gorm.DB, ctx context.Context) *BabysittersReposito
 	}
 }
 
-func (r *BabysittersRepository) GetAllBabysitters(c *gin.Context) []entities.Babysitter {
+func (r *BabysittersRepository) GetAllBabysitters() []entities.Babysitter {
 	babysitters, _ := gorm.G[entities.Babysitter](r.DB).Find(r.Ctx)
 	return babysitters
 }
 
-func (r *BabysittersRepository) CreateBabysitter(c *gin.Context, newBabysitter entities.Babysitter) {
-	gorm.G[entities.Babysitter](r.DB).Create(r.Ctx, &newBabysitter)
+func (r *BabysittersRepository) CreateBabysitter(c *gin.Context, babysitter *entities.Babysitter) {
+	if err := gorm.G[entities.Babysitter](r.DB).Create(r.Ctx, babysitter); err != nil {
+		panic(err)
+	}
+}
+
+func (r *BabysittersRepository) GetBabysitterById(c *gin.Context, id string) entities.Babysitter {
+	babysitter, err := gorm.G[entities.Babysitter](r.DB).Where("ID = ?", id).First(r.Ctx)
+	if err != nil {
+		panic(err)
+	}
+	return babysitter
 }
