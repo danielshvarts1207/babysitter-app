@@ -16,8 +16,7 @@ func Connect(connectionString string) (*gorm.DB, context.Context) {
 
 	ctx := context.Background()
 
-	db.AutoMigrate(&entities.Babysitter{})
-	db.AutoMigrate(&entities.Client{})
+	db.AutoMigrate(&entities.User{})
 
 	return db, ctx
 }
